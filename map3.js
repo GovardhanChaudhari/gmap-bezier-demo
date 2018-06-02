@@ -1,5 +1,7 @@
 var map;
-
+var radius=5;
+var dashGap=2;
+var lineColour = "red";
 function init() {
     var Map = google.maps.Map,
         LatLng = google.maps.LatLng,
@@ -42,8 +44,8 @@ function init() {
     var lineHeading = google.maps.geometry.spherical.computeHeading(markerP1.getPosition(), markerP2.getPosition());
 
     // Create two points off the main line to create the curve
-    var curveMakerA = google.maps.geometry.spherical.computeOffset(markerP1.getPosition(), lineLength / 5, lineHeading - 60);
-    var curveMakerB = google.maps.geometry.spherical.computeOffset(markerP2.getPosition(), lineLength / 5, -lineHeading + 120);
+    var curveMakerA = google.maps.geometry.spherical.computeOffset(markerP1.getPosition(), lineLength / radius, lineHeading - 60);
+    var curveMakerB = google.maps.geometry.spherical.computeOffset(markerP2.getPosition(), lineLength / radius, -lineHeading + 120);
     var curvedLine = new GmapsCubicBezier(markerP1.getPosition(), curveMakerA, curveMakerB, markerP2.getPosition(), 0.1, map);
 
 }
@@ -99,9 +101,9 @@ var GmapsCubicBezier = function (latlong1, latlong2, latlong3, latlong4, resolut
                 scale: 1
             },
             offset: '0',
-            repeat: '2px'
+            repeat: dashGap +'px'
         }],
-        strokeColor: 'red'
+        strokeColor: lineColour
     });
 
     Line.setMap(map);
@@ -131,3 +133,23 @@ GmapsCubicBezier.prototype = {
         return pos;
     }
 };
+
+function sliderChanged(event) {
+    console.log("slider changed",event.value);
+    radius = event.value;
+    init();
+}
+
+
+function dashSliderChanged(event) {
+    console.log("slider changed",event.value);
+    dashGap = event.value;
+    init();
+}
+
+function colourChanged(event) {
+    console.log("slider changed",event.value);
+    lineColour= event.value;
+    init();
+}
+
